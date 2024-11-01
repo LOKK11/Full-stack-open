@@ -1,2 +1,1 @@
-# Full-stack-open osa0
-Tehtävät osasta 0
+# Full-stack-open 2024 Ossi Myllymäki
