@@ -1,5 +1,5 @@
 {
-  "name": "app1",
+  "name": "app2",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "app1": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
