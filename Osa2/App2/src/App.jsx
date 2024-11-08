@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const Filter = ({ searchWith, handleSearchChange }) => {
   return (
@@ -58,6 +58,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchWith, setSearchWith] = useState('')
+  const [message, setMessage] = useState({ text: null, type: null })
 
   const hook = () => {
     console.log('effect')
@@ -90,6 +91,10 @@ const App = () => {
           .update(changedPerson.id, changedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+            setMessage({ text: `Updated ${newName}`, type: 'success' })
+            setTimeout(() => {
+              setMessage({ text: null, type: null })
+            }, 5000)
           })
         setNewName('')
         setNewNumber('')
@@ -101,6 +106,12 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+
+        setMessage({ text: `Added ${newName}`, type: 'success' })
+        setTimeout(() => {
+          setMessage({ text: null, type: null })
+        }, 5000)
+
         setNewName('')
         setNewNumber('')
       })
@@ -122,19 +133,31 @@ const App = () => {
   }
 
   const handleDelete = (event) => {
-    event.preventDefault()
-    console.log(event.target)
-    personService
-      .remove(event.target.value)
+    const id = event.target.value
+    const deletedPerson = persons.find(person => person.id === id)
+    if (window.confirm("Are you sure you want to delete this person?")) {
+      personService
+        .remove(id)
         .then(response => {
-          console.log(response)
+          setPersons(persons.filter(person => person.id !== id))
+          setMessage({ text: `Deleted ${deletedPerson.name}`, type: 'success' })
+          setTimeout(() => {
+            setMessage({ text: null, type: null })
+          }, 5000)
         })
-    setPersons(persons.filter(person => person.id !== event.target.value))
+        .catch(error => {
+          setMessage({ text: `Information of ${deletedPerson.name} has already been removed from the server`, type: 'error' })
+          setTimeout(() => {
+            setMessage({ text: null, type: null })
+          }, 5000)
+        })
+    }
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message.text} type={message.type} />
       <h2>Search</h2>
       <Filter
         searchWith={searchWith}
