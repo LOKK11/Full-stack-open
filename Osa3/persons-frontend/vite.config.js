@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://full-stack-open-part3-hut6.onrender.com",
+        target: "http://localhost:3001",
         changeOrigin: true,
       },
     },
