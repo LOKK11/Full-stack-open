@@ -96,6 +96,13 @@ const App = () => {
               setMessage({ text: null, type: null })
             }, 5000)
           })
+          .catch(error => {
+            setMessage({ text: error.response.data.error, type: 'error' })
+            setTimeout(() => {
+              setMessage({ text: null, type: null })
+            }, 5000)
+            console.log(error.response.data)
+          })
         setNewName('')
         setNewNumber('')
       }
@@ -114,6 +121,13 @@ const App = () => {
 
         setNewName('')
         setNewNumber('')
+      })
+      .catch(error => {
+        setMessage({ text: error.response.data.error, type: 'error' })
+        setTimeout(() => {
+          setMessage({ text: null, type: null })
+        }, 5000)
+        console.log(error.response.data)
       })
   }
 
