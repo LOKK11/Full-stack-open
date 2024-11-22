@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../persons-frontend && npm run build && @powershell Copy-Item dist -Recurse ../persons-backend",
@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "lodash": "^4.17.21",
     "mongoose": "^8.8.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
