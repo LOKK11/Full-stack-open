@@ -47,11 +47,11 @@ describe('blog api tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
+    const blogsAtEnd = await helper.blogsInDb()
 
-    const contents = response.body.map(r => r.title)
+    const contents = blogsAtEnd.map(r => r.title)
 
-    assert.strictEqual(response.body.length, helper.blogs.length + 1)
+    assert.strictEqual(blogsAtEnd.length, helper.blogs.length + 1)
 
     assert(contents.includes('New Blog'))
   })
@@ -66,8 +66,8 @@ describe('blog api tests', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/blogs')
-    const addedBlog = response.body.find(blog => blog.title === 'New Blog')
+    const blogsAtEnd = await helper.blogsInDb()
+    const addedBlog = blogsAtEnd.find(blog => blog.title === 'New Blog')
 
     assert.strictEqual(addedBlog.likes, 0)
   })
@@ -80,6 +80,9 @@ describe('blog api tests', () => {
       .post('/api/blogs')
       .send(newBlog)
       .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.blogs.length)
   })
 
   test('blog without url is not added', async () => {
@@ -90,5 +93,42 @@ describe('blog api tests', () => {
       .post('/api/blogs')
       .send(newBlog)
       .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.blogs.length)
+  })
+
+  test('blog can be deleted', async () => {
+    const response = await api.get('/api/blogs')
+    const blogToDelete = response.body[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    assert.strictEqual(blogsAtEnd.length, helper.blogs.length - 1)
+
+    const contents = blogsAtEnd.map(r => r.title)
+
+    assert(!contents.includes(blogToDelete.title))
+  })
+
+  test('blog can be updated', async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToUpdate = blogs[0]
+
+    const updatedBlog = { ...blogToUpdate, likes: 100 }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlogAtEnd = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+
+    assert.strictEqual(updatedBlogAtEnd.likes, 100)
   })
 })
