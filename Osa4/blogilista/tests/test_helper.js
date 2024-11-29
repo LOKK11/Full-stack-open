@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const newBlog = {
   title: 'New Blog',
@@ -25,7 +26,7 @@ const blogs = [
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
-    __v: 0
+    __v: 0,
   },
   {
     _id: '5a422aa71b54a676234d17f8',
@@ -69,11 +70,46 @@ const blogs = [
   }
 ]
 
+const newUser ={
+  username: 'newUser',
+  name: 'newName',
+  password: 'salainen'
+}
+
+const users = [
+  {
+    username: 'Ville',
+    name: 'Ville',
+    password: 'salainen'
+  },
+  {
+    username: 'Matti',
+    name: 'Matti',
+    password: 'salainen'
+  },
+  {
+    username: 'Teppo',
+    name: 'Teppo',
+    password: 'salainen'
+  },
+]
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
 }
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
 module.exports = {
-  newBlog, listWithOneBlog, blogs, blogsInDb
+  newBlog,
+  listWithOneBlog,
+  blogs,
+  blogsInDb,
+  newUser,
+  usersInDb,
+  users,
 }
