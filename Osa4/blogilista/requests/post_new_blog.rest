@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik96em9uZSIsImlkIjoiNjc0NDk5Njk5YmJmOGEzODU4MGM5MWNiIiwiaWF0IjoxNzMyNTQ5MDAyfQ.Tx9LCstaP4O1ghUH41-Yu_sVXgVlcM6njZm6IPq7FzE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik96em9uZSIsImlkIjoiNjc0NDk5Njk5YmJmOGEzODU4MGM5MWNiIiwiaWF0IjoxNzMzMTM0OTI0fQ.WLZuqUfuzroV_VPC1qNDbT5cyBwQ4O9pzwkKpVeuRBQ
 
 {
-  "title": "Test blog",
-  "author": "Test author",
-  "url": "http://test.url"
+  "title": "How to remove ingrown toenails",
+  "author": "Dr. Pimple Popper",
+  "url": "http://www.pimplepopper.com"
 }
