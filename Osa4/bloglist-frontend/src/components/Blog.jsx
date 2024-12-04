@@ -23,7 +23,7 @@ const Blog = ({ blog, user }) => {
 
   const handleLike = async () => {
     await blogService.update(
-      blog.id, 
+      blog.id,
       {
         user: blog.user.id,
         likes: blog.likes + 1,
@@ -47,7 +47,7 @@ const Blog = ({ blog, user }) => {
       <div style={hideWhenVisible}>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>view</button>
-      </div>  
+      </div>
       <div style={showWhenVisible}>
         <div>
           {blog.title} {blog.author}
