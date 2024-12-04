@@ -3,16 +3,17 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import loginService from './services/login'
+import CreateBlogForm from './components/CreateBlogForm'
+import { useBlogContext } from './BlogContext'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  // Use the useBlogContext so that you can access the states from all components
+  const { blogs, setBlogs, fetchTrigger, message, setMessage } = useBlogContext()
+  
+  const [createBlogVisible, setCreateBlogVisible] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState({ text: null, type: null })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -26,10 +27,11 @@ const App = () => {
   useEffect(() => {
     async function fetchData() {
       const blogs = await blogService.getAll()
+      blogs.sort((a, b) => b.likes - a.likes)
       setBlogs(blogs)
     }
     fetchData()
-  }, [])
+  }, [fetchTrigger])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -56,32 +58,6 @@ const App = () => {
       }, 5000)
     }
   }
-  
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    }
-    try {
-      const response = await blogService.create(blogObject)
-      setBlogs(blogs.concat(response))
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
-      setMessage({text: `A new blog ${newTitle} added`, type: 'success'})
-      setTimeout(() => {
-        setMessage({text: null, type: null})
-      }, 5000)
-    } catch (exception) {
-      setMessage({text: 'Error adding blog', type: 'error'})
-      setTimeout(() => {
-        setMessage({text: null, type: null})
-      }, 5000)
-    }
-  }
-
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -110,46 +86,36 @@ const App = () => {
   const blogForm = () => (
     <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} user={user}/>
       )}
     </div>
   )
 
-  const inputBlogForm = () => (
-    <form onSubmit={addBlog}>
-      <div>
-        title:
-        <input
-          value={newTitle}
-          onChange={({ target }) => setNewTitle(target.value)}
-        />
-      </div>
-      <div>
-        author:
-        <input
-          value={newAuthor}
-          onChange={({ target }) => setNewAuthor(target.value)}
-        />
-      </div>
-      <div>
-        url:
-        <input
-          value={newUrl}
-          onChange={({ target }) => setNewUrl(target.value)}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-  )
-
-
   const handleLogOut = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+    blogService.setToken(null)
     setMessage({text: 'Logged out', type: 'success'})
     setTimeout(() => {
       setMessage({text: null, type: null})
     }, 5000)
+  }
+
+  const createBlogForm = () => {
+    const hideWhenVisible = { display: createBlogVisible ? 'none' : '' }
+    const showWhenVisible = { display: createBlogVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setCreateBlogVisible(true)}>New Blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <CreateBlogForm />
+          <button onClick={() => setCreateBlogVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -159,8 +125,7 @@ const App = () => {
       {!user && loginForm()}
       {user && <div>
         <p>{user.name} logged in</p> <button onClick={() => handleLogOut()}>logout</button>
-        <h2>Create new</h2>
-        {inputBlogForm()}
+        {createBlogForm()}
         {blogForm()}
       </div>
       }
