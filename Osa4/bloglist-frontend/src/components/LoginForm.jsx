@@ -14,7 +14,6 @@ const LoginForm = () => {
       const user = await loginService.login({
         username, password
       })
-      console.log('user', user)
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )

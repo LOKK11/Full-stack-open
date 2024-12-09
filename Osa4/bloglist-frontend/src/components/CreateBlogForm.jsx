@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 import { useBlogContext } from '../BlogContext'
 
-const CreateBlogForm = () => {
-  const { setMessage, setFetchTrigger, fetchTrigger, setBlogs, blogs } = useBlogContext()
+const CreateBlogForm = ({ createBlog }) => {
+  const { setMessage, setFetchTrigger, fetchTrigger } = useBlogContext()
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -16,8 +15,7 @@ const CreateBlogForm = () => {
       url: newUrl,
     }
     try {
-      const response = await blogService.create(blogObject)
-      setBlogs(blogs.concat(response))
+      await createBlog(blogObject)
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
@@ -40,21 +38,21 @@ const CreateBlogForm = () => {
       <form onSubmit={addBlog}>
         <div>
 				title:
-          <input
+          <input id="title"
             value={newTitle}
             onChange={({ target }) => setNewTitle(target.value)}
           />
         </div>
         <div>
 				author:
-          <input
+          <input id="author"
             value={newAuthor}
             onChange={({ target }) => setNewAuthor(target.value)}
           />
         </div>
         <div>
 				url:
-          <input
+          <input id="url"
             value={newUrl}
             onChange={({ target }) => setNewUrl(target.value)}
           />

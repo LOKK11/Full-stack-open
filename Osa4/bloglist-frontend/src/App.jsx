@@ -9,7 +9,7 @@ import LoginForm from './components/LoginForm'
 
 const App = () => {
   // Use the useBlogContext so that you can access the states from all components
-  const { blogs, setBlogs, fetchTrigger, message, setMessage, user, setUser } = useBlogContext()
+  const { blogs, setBlogs, fetchTrigger, setFetchTrigger, message, setMessage, user, setUser } = useBlogContext()
 
   const [createBlogVisible, setCreateBlogVisible] = useState(false)
 
@@ -31,10 +31,29 @@ const App = () => {
     fetchData()
   }, [fetchTrigger])
 
+  const handleLike = async blog => {
+    await blogService.update(
+      blog.id,
+      {
+        user: blog.user.id,
+        likes: blog.likes + 1,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url
+      }
+    )
+    setFetchTrigger(!fetchTrigger)
+  }
+
+  const createBlog = async blogObject => {
+    const response = await blogService.create(blogObject)
+    setBlogs(blogs.concat(response))
+  }
+
   const blogForm = () => (
     <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} user={user}/>
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       )}
     </div>
   )
@@ -59,7 +78,7 @@ const App = () => {
           <button onClick={() => setCreateBlogVisible(true)}>New Blog</button>
         </div>
         <div style={showWhenVisible}>
-          <CreateBlogForm />
+          <CreateBlogForm createBlog={createBlog}/>
           <button onClick={() => setCreateBlogVisible(false)}>cancel</button>
         </div>
       </div>

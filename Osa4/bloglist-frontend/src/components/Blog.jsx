@@ -2,8 +2,8 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import { useBlogContext } from '../BlogContext'
 
-const Blog = ({ blog, user }) => {
-  const { setFetchTrigger, fetchTrigger } = useBlogContext()
+const Blog = ({ blog, handleLike }) => {
+  const { setFetchTrigger, fetchTrigger, user } = useBlogContext()
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -21,20 +21,6 @@ const Blog = ({ blog, user }) => {
     setVisible(!visible)
   }
 
-  const handleLike = async () => {
-    await blogService.update(
-      blog.id,
-      {
-        user: blog.user.id,
-        likes: blog.likes + 1,
-        author: blog.author,
-        title: blog.title,
-        url: blog.url
-      }
-    )
-    setFetchTrigger(!fetchTrigger)
-  }
-
   const handleDelete = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.remove(blog.id)
@@ -44,11 +30,11 @@ const Blog = ({ blog, user }) => {
 
   return (
     <div style={blogStyle}>
-      <div style={hideWhenVisible}>
+      <div style={hideWhenVisible} id="DefaultBlogView">
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>view</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} id="DetailedBlogView">
         <div>
           {blog.title} {blog.author}
           <button onClick={toggleVisibility}>hide</button>
@@ -58,7 +44,7 @@ const Blog = ({ blog, user }) => {
         </div>
         <div>
           likes {blog.likes}
-          <button onClick={handleLike}>like</button>
+          <button onClick={() => handleLike(blog)}>like</button>
         </div>
         <div>
           {blog.user.name}
