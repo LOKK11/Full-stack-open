@@ -1,0 +1,5 @@
+POST http://localhost:5173/api/testing/reset
+Content-Type: application/json
+
+{
+}

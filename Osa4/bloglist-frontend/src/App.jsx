@@ -46,8 +46,20 @@ const App = () => {
   }
 
   const createBlog = async blogObject => {
-    const response = await blogService.create(blogObject)
-    setBlogs(blogs.concat(response))
+    try {
+      const response = await blogService.create(blogObject)
+      setBlogs(blogs.concat(response))
+      setFetchTrigger(!fetchTrigger)
+      setMessage({ text: `A new blog ${blogObject.title} added`, type: 'success' })
+      setTimeout(() => {
+        setMessage({ text: null, type: null })
+      }, 5000)
+    } catch (exception) {
+      setMessage({ text: 'Error adding blog', type: 'error' })
+      setTimeout(() => {
+        setMessage({ text: null, type: null })
+      }, 5000)
+    }
   }
 
   const blogForm = () => (

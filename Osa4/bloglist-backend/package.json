@@ -7,6 +7,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test node --test",
+    "start:test": "cross-env NODE_ENV=test node index.js",
     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../persons-frontend && npm run build && @powershell Copy-Item dist -Recurse ../persons-backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint ."
@@ -20,7 +21,7 @@
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mongoose": "^8.8.2",
+    "mongoose": "^8.8.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

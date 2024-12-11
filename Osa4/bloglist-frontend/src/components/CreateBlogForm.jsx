@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useBlogContext } from '../BlogContext'
 
 const CreateBlogForm = ({ createBlog }) => {
-  const { setMessage, setFetchTrigger, fetchTrigger } = useBlogContext()
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -14,22 +13,10 @@ const CreateBlogForm = ({ createBlog }) => {
       author: newAuthor,
       url: newUrl,
     }
-    try {
-      await createBlog(blogObject)
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
-      setFetchTrigger(!fetchTrigger)
-      setMessage({ text: `A new blog ${newTitle} added`, type: 'success' })
-      setTimeout(() => {
-        setMessage({ text: null, type: null })
-      }, 5000)
-    } catch (exception) {
-      setMessage({ text: 'Error adding blog', type: 'error' })
-      setTimeout(() => {
-        setMessage({ text: null, type: null })
-      }, 5000)
-    }
+    await createBlog(blogObject)
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
   }
 
   return (
